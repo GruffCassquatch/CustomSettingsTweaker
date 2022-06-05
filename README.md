@@ -9,7 +9,7 @@ Should be compatible with other mods that also alter these settings, just leave 
 [ModSettings](https://github.com/zeobviouslyfakeacc/ModSettings/releases)
 
 ## Installation:
-1. Download ```CustomSettingsTweaker.dll``` from [releases](https://github.com/GruffCassquatch/ChooseStartingLocation/releases)
+1. Download ```CustomSettingsTweaker.dll``` from [releases]([https://github.com/GruffCassquatch/CustomSettingsTweaker/releases])
 2. Drop ```CustomSettingsTweaker.dll``` into your Mods folder
 3. If you are updating from an older version, delete the ```CustomSettingsTweaker.json``` from your Mods folder as old json's can cause errors if the mod's Settings have been changed
 
