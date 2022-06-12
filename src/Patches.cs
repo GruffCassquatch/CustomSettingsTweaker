@@ -47,8 +47,6 @@ namespace CustomSettingsTweaker
                 float phaselength = hoursBeforeStarvation - 36;
                 float fatiguePenaltyPerHour = 50f / phaselength;
 
-                MelonLogger.Msg("Fatigue penalty per hour increase " + GameManager.GetHungerComponent().m_FatiguePenaltyPerHourIncrease.ToString());
-
                 if (hoursBeforeStarvation < 168) // < 1 week
                 {
                     GameManager.GetHungerComponent().m_MaxFatiguePenalty = 50;

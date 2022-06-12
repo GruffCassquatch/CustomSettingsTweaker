@@ -170,7 +170,6 @@ namespace CustomSettingsTweaker
         {
             if (field.Name == nameof(modFunction) ||
                 field.Name == nameof(calorieBurnRate) ||
-                //field.Name == nameof(thirstRate) ||
                 field.Name == nameof(dehydrationRate) ||
                 field.Name == nameof(fatigueRate) ||
                 field.Name == nameof(freezingRate) ||
@@ -188,13 +187,10 @@ namespace CustomSettingsTweaker
             SetFieldVisible(nameof(calorieBurnRateSlider), Settings.settings.modFunction != ModFunction.Disabled && calorieBurnRate == Choice.Custom);
             SetFieldVisible(nameof(starvingDamage), Settings.settings.modFunction != ModFunction.Disabled && calorieBurnRate != Choice.Default);
             // Thirst
-            //SetFieldVisible(nameof(thirstRate), Settings.settings.modFunction != ModFunction.Disabled);
-            //SetFieldVisible(nameof(thirstRateSlider), Settings.settings.modFunction != ModFunction.Disabled && thirstRate == Choice.Custom);
             SetFieldVisible(nameof(dehydrationRate), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(dehydrationSlider), Settings.settings.modFunction != ModFunction.Disabled && dehydrationRate == Dehydration.Custom);
             SetFieldVisible(nameof(litresPerDay), Settings.settings.modFunction != ModFunction.Disabled && dehydrationRate != Dehydration.Default);
             SetFieldVisible(nameof(dehydrationDamage), Settings.settings.modFunction != ModFunction.Disabled && dehydrationRate != Dehydration.Default);
-
             // Fatigue
             SetFieldVisible(nameof(fatigueRate), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(fatigueRateSlider), Settings.settings.modFunction != ModFunction.Disabled && fatigueRate == Choice.Custom);
