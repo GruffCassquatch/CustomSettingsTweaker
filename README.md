@@ -1,7 +1,7 @@
 # Custom Settings Tweaker
 
 Allows you to change and fine-tune several settings in a Custom mode game (new or existing).     
-Should be compatible with other mods that also alter these settings, just leave the corresponding setting in this mod at ```Game Default``` so the other mod alters it as intended.
+Should be compatible with other mods that also alter these settings, just leave the corresponding setting in this mod at ```Unchanged``` so the other mod alters it as intended.
 
 ## Requirements
 [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe)
