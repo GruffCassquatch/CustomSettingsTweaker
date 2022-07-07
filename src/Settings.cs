@@ -159,7 +159,7 @@ namespace CustomSettingsTweaker
 
         [Name("         Starving Damage")]
         [Description("Condition loss per day while Starving.\nGame Default Value is 25.\n25 = 4 days to die, 3 = approx. 33 days")]
-        [Slider(3, 25)]
+        [Slider(3, 50)]
         public int starvingDamage = 25;
 
         // Thirst Reworked
