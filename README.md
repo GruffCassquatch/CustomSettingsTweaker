@@ -1,7 +1,7 @@
 # Custom Settings Tweaker
 
 Allows you to change and fine-tune several settings in a Custom mode game (new or existing).     
-Should be compatible with other mods that also alter these settings, just leave the corresponding setting in this mod at ```Game Default``` so the other mod alters it as intended.
+Should be compatible with other mods that also alter these settings, just leave the corresponding setting in this mod at ```Unchanged``` so the other mod alters it as intended.
 
 ## Requirements
 [MelonLoader](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe)
@@ -24,7 +24,7 @@ Delete ```CustomSettingsTweaker.dll``` and ```CustomSettingsTweaker.json``` file
 	* ```Disabled:``` Mod is disabled; the game will be completely unmodified
 	* ```Enabled:``` Mod is enabled; the settings you choose will be applied when playing Custom mode games
 	* For the rest of the options: 
-	    * ```Game Default``` nothing will be changed in regards to that setting
+	    * ```Unchanged``` nothing will be changed in regards to that setting
 	    * ```Low```, ```Medium```, ```High``` etc. corresponds to the default game value for that setting (e.g. as if you chose that option when starting the game)
 	    * ```Custom``` choose a custom value using the slider. For long sliders, use your mouse to get close to the value you want and then use the left/right arrow keys on your keyboard to get the exact number
 	    * Thirst and Condition Recovery include some additional presets for convenience
