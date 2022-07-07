@@ -7,7 +7,6 @@ namespace CustomSettingsTweaker
 {
     internal static class Patches
     {
-
         [HarmonyPatch(typeof(ExperienceModeManager), "GetCustomMode")]
         private static class GetCustomExperienceModeUpdated
         {
@@ -1398,6 +1397,20 @@ namespace CustomSettingsTweaker
                     __instance.m_Bed.m_UinterruptedRestPercentGainPerHour = 0;
                 }
                 return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(Skill_Cooking), "NoParasitesOrFoodPosioning")]
+        private static class CheckNoParasitesOrFoodPosioning
+        {
+            private static void Postfix(bool __result)
+            {
+                MelonLogger.Msg("ORIGINAL RESULT = " + __result);
+                if (Settings.settings.modFunction != ModFunction.Disabled && __result && !Settings.settings.noParasitesOrFoodPoisoning)
+                {
+                    __result = false;
+                }
+                MelonLogger.Msg("NEW RESULT = " + __result);
             }
         }
     }
