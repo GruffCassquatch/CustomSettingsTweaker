@@ -324,10 +324,6 @@ namespace CustomSettingsTweaker
         [Choice("Unchanged", "No", "Yes")]
         public ChoiceDNY birchBarkTea = ChoiceDNY.Default;
 
-        [Name("Cooking Skill affects Parasites/Food Poisoning")]
-        [Description("Level 5 Cooking Skill removes risk of parasites & food poisoning in cooked food.\nYES: Game Default setting. NO: Disable this effect.")]
-        public bool noParasitesOrFoodPoisoning = true;
-
 
         // GEAR
         // Item Decay Rate
@@ -577,7 +573,6 @@ namespace CustomSettingsTweaker
             SetFieldVisible(nameof(firesPreventFreezing), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(wakeUpWhenFreezing), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(birchBarkTea), Settings.settings.modFunction != ModFunction.Disabled);
-            SetFieldVisible(nameof(noParasitesOrFoodPoisoning), Settings.settings.modFunction != ModFunction.Disabled);
             // Gear
             SetFieldVisible(nameof(decayRate), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(looseItemAvailability), Settings.settings.modFunction != ModFunction.Disabled);
