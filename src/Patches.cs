@@ -13,8 +13,7 @@ namespace CustomSettingsTweaker
             private static void Postfix(CustomExperienceMode __result)
             {
                 if (GameManager.m_ActiveScene == "MainMenu") return;
-                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom) return;
-                if (Settings.settings.modFunction == ModFunction.Disabled) return;
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return;
 
                 // GAME START
                 // Baseline Resource Availability
@@ -618,8 +617,7 @@ namespace CustomSettingsTweaker
             private static void Postfix(CustomExperienceMode __instance)
             {
                 if (GameManager.m_ActiveScene == "MainMenu") return;
-                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom) return;
-                if (Settings.settings.modFunction == ModFunction.Disabled) return;
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return;
 
                 List<ExperienceMode> baseXPModesSortedByDifficultyAsc = __instance.GetBaseXPModesSortedByDifficultyAsc();
 
@@ -1229,8 +1227,11 @@ namespace CustomSettingsTweaker
         {
             private static void Postfix(CustomExperienceModeManager.CustomTunableNLMHV __result, WolfType wolfType)
             {
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return;
+                if (Settings.settings.timberwolfSpawn == ChoiceDNLMHV.Default && Settings.settings.wolfSpawn == ChoiceDNLMHV.Default) return;
+
                 //MelonLogger.Msg("Wolf Spawn Chance ORIGINAL" + __result.ToString());
-                if (wolfType != WolfType.Normal)
+                if (Settings.settings.timberwolfSpawn != ChoiceDNLMHV.Default && wolfType != WolfType.Normal)
                 {
                     switch (Settings.settings.timberwolfSpawn)
                     {
@@ -1253,25 +1254,28 @@ namespace CustomSettingsTweaker
                             break;
                     }
                 }
-                switch (Settings.settings.wolfSpawn)
+                else if (Settings.settings.wolfSpawn != ChoiceDNLMHV.Default)
                 {
-                    case ChoiceDNLMHV.None:
-                        __result = CustomExperienceModeManager.CustomTunableNLMHV.None;
-                        break;
-                    case ChoiceDNLMHV.Low:
-                        __result = CustomExperienceModeManager.CustomTunableNLMHV.Low;
-                        break;
-                    case ChoiceDNLMHV.Medium:
-                        __result = CustomExperienceModeManager.CustomTunableNLMHV.Medium;
-                        break;
-                    case ChoiceDNLMHV.High:
-                        __result = CustomExperienceModeManager.CustomTunableNLMHV.High;
-                        break;
-                    case ChoiceDNLMHV.VeryHigh:
-                        __result = CustomExperienceModeManager.CustomTunableNLMHV.VeryHigh;
-                        break;
-                    default:
-                        break;
+                    switch (Settings.settings.wolfSpawn)
+                    {
+                        case ChoiceDNLMHV.None:
+                            __result = CustomExperienceModeManager.CustomTunableNLMHV.None;
+                            break;
+                        case ChoiceDNLMHV.Low:
+                            __result = CustomExperienceModeManager.CustomTunableNLMHV.Low;
+                            break;
+                        case ChoiceDNLMHV.Medium:
+                            __result = CustomExperienceModeManager.CustomTunableNLMHV.Medium;
+                            break;
+                        case ChoiceDNLMHV.High:
+                            __result = CustomExperienceModeManager.CustomTunableNLMHV.High;
+                            break;
+                        case ChoiceDNLMHV.VeryHigh:
+                            __result = CustomExperienceModeManager.CustomTunableNLMHV.VeryHigh;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 //MelonLogger.Msg("Wolf Spawn Chance NEW" + __result.ToString());
             }
@@ -1282,8 +1286,8 @@ namespace CustomSettingsTweaker
         {
             private static bool Prefix()
             {
-                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom) return true;
-                if (Settings.settings.modFunction == ModFunction.Disabled) return true;
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return true;
+
 
                 if (Settings.settings.calorieBurnRate != ChoiceDLMHVC.Default)
                 {
@@ -1310,9 +1314,7 @@ namespace CustomSettingsTweaker
         {
             private static bool Prefix()
             {
-                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom) return true;
-                if (Settings.settings.modFunction == ModFunction.Disabled) return true;
-                if (Settings.settings.calorieBurnRate == ChoiceDLMHVC.Default) return true;
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.calorieBurnRate == ChoiceDLMHVC.Default) return true;
 
                 int hoursBeforeStarvation = Mathf.RoundToInt((100f / Settings.settings.starvingDamage) * 24f);
                 float phaselength = hoursBeforeStarvation - 36;
@@ -1337,9 +1339,7 @@ namespace CustomSettingsTweaker
         {
             private static bool Prefix()
             {
-                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom) return true;
-                if (Settings.settings.modFunction == ModFunction.Disabled) return true;
-                if (Settings.settings.dehydrationRate == Dehydration.Default) return true;
+                if(ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
 
                 int hours = 24;
 
@@ -1384,13 +1384,64 @@ namespace CustomSettingsTweaker
             }
         }
 
+        // PlayerManager FirstAidConsumed -> prefix and update gi argument
+        [HarmonyPatch(typeof(PlayerManager), "FirstAidConsumed")]
+        private static class FirstAidConsumed_UpdateReduceThirst
+        {
+            private static bool Prefix(ref GearItem gi)
+            {
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
+
+                if (gi.m_FoodItem)
+                {
+                    if (gi.m_FoodItem.m_ReduceThirst != 0f)
+                    {
+                        float multiplier = GameManager.GetThirstComponent().m_ThirstQuenchedPerLiter / 150f;
+                        float thirstValue = GetGearItemPrefab(gi.m_GearName).m_FoodItem.m_ReduceThirst;
+                        float newThirstValue = thirstValue * multiplier;
+
+                        gi.m_FoodItem.m_ReduceThirst = newThirstValue;
+
+                        MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: ORIGINAL Thirst Value = " + thirstValue.ToString());
+                        MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: NEW Thirst Value = " + newThirstValue.ToString());
+                    }
+                }
+                return true;
+            }
+        }
+
+        // PlayerManager UseFoodInventoryItem -> prefix and update gi argument
+        [HarmonyPatch(typeof(PlayerManager), "UseFoodInventoryItem")]
+        private static class UseFoodInventoryItem_UpdateReduceThirst
+        {
+            private static bool Prefix(ref GearItem gi)
+            {
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
+
+                if (gi.m_FoodItem)
+                {
+                    if (gi.m_FoodItem.m_ReduceThirst != 0f)
+                    {
+                        float multiplier = GameManager.GetThirstComponent().m_ThirstQuenchedPerLiter / 150f;
+                        float thirstValue = GetGearItemPrefab(gi.m_GearName).m_FoodItem.m_ReduceThirst;
+                        float newThirstValue = thirstValue * multiplier;
+
+                        gi.m_FoodItem.m_ReduceThirst = newThirstValue;
+
+                        MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: ORIGINAL Thirst Value = " + thirstValue.ToString());
+                        MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: NEW Thirst Value = " + newThirstValue.ToString());
+                    }
+                }
+                return true;
+            }
+        }
+
         [HarmonyPatch(typeof(Rest), "UpdateCondition")]
         private static class RemoveUninterruptedRestBonus
         {
             private static bool Prefix(Rest __instance)
             {
-                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom) return true;
-                if (Settings.settings.modFunction == ModFunction.Disabled) return true;
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.restBonus == ChoiceDNY.Default) return true;
 
                 if (Settings.settings.restBonus == ChoiceDNY.No)
                 {
@@ -1399,6 +1450,7 @@ namespace CustomSettingsTweaker
                 return true;
             }
         }
+        private static GearItem GetGearItemPrefab(string name) => Resources.Load(name).Cast<GameObject>().GetComponent<GearItem>();
     }
 }
 
