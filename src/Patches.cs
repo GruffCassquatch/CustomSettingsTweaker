@@ -1395,7 +1395,7 @@ namespace CustomSettingsTweaker
                 {
                     if (gi.m_FoodItem.m_ReduceThirst != 0f)
                     {
-                        MelonLogger.Msg(gi.name.ToString() + " FirstAidConsumed_UpdateReduceThirst: ORIGINAL Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
+                        //MelonLogger.Msg(gi.name.ToString() + " FirstAidConsumed_UpdateReduceThirst: ORIGINAL Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                         float multiplier = GameManager.GetThirstComponent().m_ThirstQuenchedPerLiter / 150f;
                         float thirstValue = GetDefaultThirstValue(gi.name);
                         if (thirstValue == 0f)
@@ -1405,7 +1405,7 @@ namespace CustomSettingsTweaker
                         }
                         float newThirstValue = thirstValue * multiplier;
                         gi.m_FoodItem.m_ReduceThirst = newThirstValue;
-                        MelonLogger.Msg(gi.name.ToString() + " FirstAidConsumed_UpdateReduceThirst: NEW Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
+                        //MelonLogger.Msg(gi.name.ToString() + " FirstAidConsumed_UpdateReduceThirst: NEW Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                     }
                 }
                 return true;
@@ -1423,7 +1423,7 @@ namespace CustomSettingsTweaker
                 {
                     if (gi.m_FoodItem.m_ReduceThirst != 0f)
                     {
-                        MelonLogger.Msg(gi.name.ToString() + " UseFoodInventoryItem_UpdateReduceThirst: ORIGINAL Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
+                        //MelonLogger.Msg(gi.name.ToString() + " UseFoodInventoryItem_UpdateReduceThirst: ORIGINAL Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                         float multiplier = GameManager.GetThirstComponent().m_ThirstQuenchedPerLiter / 150f;
                         float thirstValue = GetDefaultThirstValue(gi.name);
                         if (thirstValue == 0f)
@@ -1440,7 +1440,7 @@ namespace CustomSettingsTweaker
                         }
                         float newThirstValue = thirstValue * multiplier;
                         gi.m_FoodItem.m_ReduceThirst = newThirstValue;
-                        MelonLogger.Msg(gi.name.ToString() + " UseFoodInventoryItem_UpdateReduceThirst: NEW Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
+                        //MelonLogger.Msg(gi.name.ToString() + " UseFoodInventoryItem_UpdateReduceThirst: NEW Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                     }
                 }
                 return true;
@@ -1465,16 +1465,8 @@ namespace CustomSettingsTweaker
         private static float GetDefaultThirstValue(string name) 
         {
             GearItem gearItem = GetGearItemPrefab(name);
-            if (!gearItem)
-            {
-                MelonLogger.Msg(name.ToString() + " GearItem Prefab = NULL");
-                return 0;
-            }
-            if (gearItem.m_FoodItem)
-            {
-                return gearItem.m_FoodItem.m_ReduceThirst;
-            }
-            MelonLogger.Msg(name.ToString() + " FoodItem Prefab = NULL");
+            if (!gearItem) return 0;
+            if (gearItem.m_FoodItem) return gearItem.m_FoodItem.m_ReduceThirst;
             return 0;
         }
 
