@@ -1434,7 +1434,7 @@ namespace CustomSettingsTweaker
                             else if (gi.m_GearName == "GEAR_PinnacleCanPeaches") thirstValue = Implementation.defaultPeachesHydration;
                             else
                             {
-                                MelonLogger.Msg(gi.m_GearName + " has no FoodItem prefab and is not found in exception list!");
+                                MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: " + gi.m_GearName + " has no FoodItem prefab and is not found in exception list!");
                                 return true;
                             }
                         }
