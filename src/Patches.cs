@@ -1456,9 +1456,7 @@ namespace CustomSettingsTweaker
         }
         private static float GetDefaultThirstValue(string name) 
         {
-            GearItem gearItem = GetGearItemPrefab(name);
-            if (gearItem == null) return 0;
-            FoodItem foodItem = gearItem.GetComponent<FoodItem>();
+            FoodItem foodItem = GetGearItemPrefab(name).GetComponent<FoodItem>();
             if (foodItem == null) return 0;
             return foodItem.m_ReduceThirst;
         }
