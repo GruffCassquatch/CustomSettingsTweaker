@@ -10,12 +10,6 @@ namespace CustomSettingsTweaker
 {
     public class Implementation : MelonMod
     {
-        // Default hydration values for food items without FoodItem prefab:
-        public const float defaultAirlineFoodHydration = 5f;
-        public const float defaultBeansHydration = -5f;
-        public const float defaultPeachesHydration = 20f;
-        public const float defaultMREHydration = 5f;
-
         public override void OnApplicationStart()
         {
             base.OnApplicationStart();
