@@ -1339,7 +1339,7 @@ namespace CustomSettingsTweaker
         {
             private static bool Prefix()
             {
-                if(ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
+                if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
 
                 int hours = 24;
 
@@ -1384,52 +1384,63 @@ namespace CustomSettingsTweaker
             }
         }
 
-        // PlayerManager FirstAidConsumed -> prefix and update gi argument
+        // PlayerManager FirstAidConsumed -> prefix to update gi
         [HarmonyPatch(typeof(PlayerManager), "FirstAidConsumed")]
         private static class FirstAidConsumed_UpdateReduceThirst
         {
             private static bool Prefix(ref GearItem gi)
             {
                 if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
-
                 if (gi.m_FoodItem)
                 {
                     if (gi.m_FoodItem.m_ReduceThirst != 0f)
                     {
+                        MelonLogger.Msg(gi.name.ToString() + " FirstAidConsumed_UpdateReduceThirst: ORIGINAL Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                         float multiplier = GameManager.GetThirstComponent().m_ThirstQuenchedPerLiter / 150f;
-                        float thirstValue = GetGearItemPrefab(gi.m_GearName).m_FoodItem.m_ReduceThirst;
+                        float thirstValue = GetDefaultThirstValue(gi.name);
+                        if (thirstValue == 0f)
+                        {
+                            MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: " + gi.m_GearName + " has no FoodItem prefab and is not found in exception list!");
+                            return true;
+                        }
                         float newThirstValue = thirstValue * multiplier;
-
                         gi.m_FoodItem.m_ReduceThirst = newThirstValue;
-
-                        MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: ORIGINAL Thirst Value = " + thirstValue.ToString());
-                        MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: NEW Thirst Value = " + newThirstValue.ToString());
+                        MelonLogger.Msg(gi.name.ToString() + " FirstAidConsumed_UpdateReduceThirst: NEW Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                     }
                 }
                 return true;
             }
         }
 
-        // PlayerManager UseFoodInventoryItem -> prefix and update gi argument
+        // PlayerManager UseFoodInventoryItem -> prefix to update gi
         [HarmonyPatch(typeof(PlayerManager), "UseFoodInventoryItem")]
         private static class UseFoodInventoryItem_UpdateReduceThirst
         {
             private static bool Prefix(ref GearItem gi)
             {
                 if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled || Settings.settings.dehydrationRate == Dehydration.Default) return true;
-
                 if (gi.m_FoodItem)
                 {
                     if (gi.m_FoodItem.m_ReduceThirst != 0f)
                     {
+                        MelonLogger.Msg(gi.name.ToString() + " UseFoodInventoryItem_UpdateReduceThirst: ORIGINAL Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                         float multiplier = GameManager.GetThirstComponent().m_ThirstQuenchedPerLiter / 150f;
-                        float thirstValue = GetGearItemPrefab(gi.m_GearName).m_FoodItem.m_ReduceThirst;
+                        float thirstValue = GetDefaultThirstValue(gi.name);
+                        if (thirstValue == 0f)
+                        {
+                            if (gi.m_GearName.StartsWith("GEAR_Airline")) thirstValue = Implementation.defaultAirlineFoodHydration;
+                            else if (gi.m_GearName == "GEAR_CannedBeans") thirstValue = Implementation.defaultBeansHydration;
+                            else if (gi.m_GearName == "GEAR_MRE") thirstValue = Implementation.defaultMREHydration;
+                            else if (gi.m_GearName == "GEAR_PinnacleCanPeaches") thirstValue = Implementation.defaultPeachesHydration;
+                            else
+                            {
+                                MelonLogger.Msg(gi.m_GearName + " has no FoodItem prefab and is not found in exception list!");
+                                return true;
+                            }
+                        }
                         float newThirstValue = thirstValue * multiplier;
-
                         gi.m_FoodItem.m_ReduceThirst = newThirstValue;
-
-                        MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: ORIGINAL Thirst Value = " + thirstValue.ToString());
-                        MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: NEW Thirst Value = " + newThirstValue.ToString());
+                        MelonLogger.Msg(gi.name.ToString() + " UseFoodInventoryItem_UpdateReduceThirst: NEW Thirst Value = " + gi.m_FoodItem.m_ReduceThirst.ToString());
                     }
                 }
                 return true;
@@ -1450,6 +1461,23 @@ namespace CustomSettingsTweaker
                 return true;
             }
         }
+
+        private static float GetDefaultThirstValue(string name) 
+        {
+            GearItem gearItem = GetGearItemPrefab(name);
+            if (!gearItem)
+            {
+                MelonLogger.Msg(name.ToString() + " GearItem Prefab = NULL");
+                return 0;
+            }
+            if (gearItem.m_FoodItem)
+            {
+                return gearItem.m_FoodItem.m_ReduceThirst;
+            }
+            MelonLogger.Msg(name.ToString() + " FoodItem Prefab = NULL");
+            return 0;
+        }
+
         private static GearItem GetGearItemPrefab(string name) => Resources.Load(name).Cast<GameObject>().GetComponent<GearItem>();
     }
 }

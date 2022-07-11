@@ -98,7 +98,7 @@ namespace CustomSettingsTweaker
         [Name("Length of day multiplier")]
         [Description("Game Default is 1x")]
         [Choice("Unchanged", "1x", "2x", "3x", "4x")]
-        public ChoiceD1234 lengthOfDay  = ChoiceD1234.Default;
+        public ChoiceD1234 lengthOfDay = ChoiceD1234.Default;
 
         // Weather Variability
         [Name("Weather Variability")]
@@ -608,6 +608,7 @@ namespace CustomSettingsTweaker
             SetFieldVisible(nameof(struggleSeverity), Settings.settings.modFunction != ModFunction.Disabled);
         }
     }
+
     internal static class Settings
     {
         public static CustomSettingsTweakerSettings settings;
