@@ -624,7 +624,10 @@ namespace CustomSettingsTweaker
                 // ENVIRONMENT
                 // Length of day multiplier
                 //MelonLogger.Msg("Length of day multiplier ORIGINAL " + __instance.m_DayNightDurationScale.ToString());
-                __instance.m_DayNightDurationScale = (float)(Settings.settings.lengthOfDay + 1);
+                if (Settings.settings.lengthOfDay == ChoiceDC.Custom)
+                {
+                    __instance.m_DayNightDurationScale = Settings.settings.lengthOfDaySlider;
+                }
                 //MelonLogger.Msg("Length of day multiplier NEW " + __instance.m_DayNightDurationScale.ToString());
 
                 // Weather variability

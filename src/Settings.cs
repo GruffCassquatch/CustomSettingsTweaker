@@ -12,6 +12,10 @@ namespace CustomSettingsTweaker
     {
         Disabled, Enabled
     }
+    public enum ChoiceDC
+    {
+        Default, Custom
+    }
     public enum ChoiceDNY
     {
         Default, No, Yes
@@ -56,10 +60,6 @@ namespace CustomSettingsTweaker
     {
         Default, None, Low, Medium, High, VeryHigh, Custom
     }
-    public enum ChoiceD1234
-    {
-        Default, OneX, TwoX, ThreeX, FourX
-    }
     public enum Dehydration
     {
         Default, SixHrs, EightHrs, TwelveHrs, TwentyFourHrs, Custom
@@ -97,8 +97,13 @@ namespace CustomSettingsTweaker
         [Section("Environment")]
         [Name("Length of day multiplier")]
         [Description("Game Default is 1x")]
-        [Choice("Unchanged", "1x", "2x", "3x", "4x")]
-        public ChoiceD1234 lengthOfDay = ChoiceD1234.Default;
+        [Choice("Unchanged", "Custom")]
+        public ChoiceDC lengthOfDay = ChoiceDC.Default;
+
+        [Name("         Custom Selection")]
+        [Description("Game Default is 1x.\nValues <1 or >4 may not work as expected and are unsupported!")]
+        [Slider(0.25f, 10f, 40, NumberFormat = "{0:0.##}")]
+        public float lengthOfDaySlider = 1.0f;
 
         // Weather Variability
         [Name("Weather Variability")]
@@ -512,6 +517,7 @@ namespace CustomSettingsTweaker
         protected override void OnChange(FieldInfo field, object oldValue, object newValue)
         {
             if (field.Name == nameof(modFunction) ||
+                field.Name == nameof(lengthOfDay) ||
                 field.Name == nameof(blizzardFrequency) ||
                 field.Name == nameof(auroraFrequency) ||
                 field.Name == nameof(calorieBurnRate) ||
@@ -533,6 +539,7 @@ namespace CustomSettingsTweaker
             SetFieldVisible(nameof(survivorMonologue), Settings.settings.modFunction != ModFunction.Disabled);
             // Environment
             SetFieldVisible(nameof(lengthOfDay), Settings.settings.modFunction != ModFunction.Disabled);
+            SetFieldVisible(nameof(lengthOfDaySlider), Settings.settings.modFunction != ModFunction.Disabled && Settings.settings.lengthOfDay != ChoiceDC.Default);
             SetFieldVisible(nameof(weatherVariability), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(blizzardFrequency), Settings.settings.modFunction != ModFunction.Disabled);
             SetFieldVisible(nameof(blizzardSlider), Settings.settings.modFunction != ModFunction.Disabled && blizzardFrequency == ChoiceDNLMHVC.Custom);
