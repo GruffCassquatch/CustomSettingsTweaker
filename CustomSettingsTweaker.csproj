@@ -31,4 +31,9 @@
 		<!--The package version here in this template may be outdated and need to be updated. Visual Studio can update package versions automatically.-->
 		<!--If the mod references any other mods (such as ModSettings), that NuGet package will also need to be listed here.-->
 	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="ModSettings">
+	    <HintPath>..\..\Program Files (x86)\Steam\steamapps\common\TheLongDark\Mods\0.6.0\ModSettings.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
 </Project>
