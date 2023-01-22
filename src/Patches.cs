@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using Il2Cpp;
+using Il2CppTLD.Gameplay;
 using MelonLoader;
 using UnityEngine;
-using Il2CppSystem.Collections.Generic;
+using CustomExperienceModeManager = Il2CppTLD.Gameplay.Tunable;
 
 namespace CustomSettingsTweaker
 {
@@ -619,8 +621,7 @@ namespace CustomSettingsTweaker
                 if (GameManager.m_ActiveScene == "MainMenu") return;
                 if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return;
 
-                List<ExperienceMode> baseXPModesSortedByDifficultyAsc = __instance.GetBaseXPModesSortedByDifficultyAsc();
-
+                System.Collections.Generic.List<ExperienceMode> baseXPModesSortedByDifficultyAsc = GetBaseXPModesSortedByDifficultyAsc();
                 // ENVIRONMENT
                 // Length of day multiplier
                 //MelonLogger.Msg("Length of day multiplier ORIGINAL " + __instance.m_DayNightDurationScale.ToString());
@@ -1403,7 +1404,7 @@ namespace CustomSettingsTweaker
                         float thirstValue = GetDefaultThirstValue(gi.name);
                         if (thirstValue == 0f)
                         {
-                            MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: " + gi.m_GearName + " has no FoodItem prefab!");
+                            MelonLogger.Msg("FirstAidConsumed_UpdateReduceThirst: " + gi.name + " has no FoodItem prefab!");
                             return true;
                         }
                         float newThirstValue = thirstValue * multiplier;
@@ -1431,7 +1432,7 @@ namespace CustomSettingsTweaker
                         float thirstValue = GetDefaultThirstValue(gi.name);
                         if (thirstValue == 0f)
                         {
-                            MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: " + gi.m_GearName + " has no FoodItem prefab!");
+                            MelonLogger.Msg("UseFoodInventoryItem_UpdateReduceThirst: " + gi.name + " has no FoodItem prefab!");
                             return true;
                         }
                         float newThirstValue = thirstValue * multiplier;
@@ -1464,6 +1465,18 @@ namespace CustomSettingsTweaker
             return foodItem.m_ReduceThirst;
         }
         private static GearItem GetGearItemPrefab(string name) => Resources.Load(name).Cast<GameObject>().GetComponent<GearItem>();
+
+        //replace the function removed from the assembly
+        private static System.Collections.Generic.List<ExperienceMode> GetBaseXPModesSortedByDifficultyAsc()
+        {
+            System.Collections.Generic.List<ExperienceMode> list = new System.Collections.Generic.List<ExperienceMode>();
+            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Pilgrim));
+            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Voyageur));
+            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Stalker));
+            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Interloper));
+            return list;
+        }
+
     }
 }
 
