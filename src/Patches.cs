@@ -621,7 +621,7 @@ namespace CustomSettingsTweaker
                 if (GameManager.m_ActiveScene == "MainMenu") return;
                 if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return;
 
-                System.Collections.Generic.List<ExperienceMode> baseXPModesSortedByDifficultyAsc = GetBaseXPModesSortedByDifficultyAsc();
+                Dictionary<int, ExperienceMode> baseXPModesSortedByDifficultyAsc = GetBaseXPModesSortedByDifficultyAsc();
                 // ENVIRONMENT
                 // Length of day multiplier
                 //MelonLogger.Msg("Length of day multiplier ORIGINAL " + __instance.m_DayNightDurationScale.ToString());
@@ -714,6 +714,7 @@ namespace CustomSettingsTweaker
 
                 // HEALTH
                 // Calorie Burn Rate
+                //MelonLogger.Msg("Calorie Burn Rate OLD " + __instance.m_CalorieBurnScale.ToString());
                 switch (Settings.settings.calorieBurnRate)
                 {
                     case ChoiceDLMHVC.Low:
@@ -734,6 +735,7 @@ namespace CustomSettingsTweaker
                     default:
                         break;
                 }
+                //MelonLogger.Msg("Calorie Burn Rate NEW " + __instance.m_CalorieBurnScale.ToString());
 
                 // Thirst
                 if (Settings.settings.dehydrationRate != Dehydration.Default)
@@ -786,6 +788,7 @@ namespace CustomSettingsTweaker
                 }
 
                 // At-Rest Condition Recovery Rate
+                //MelonLogger.Msg("m_ConditonRecoveryFromRestScale OLD " + __instance.m_ConditonRecoveryFromRestScale.ToString());
                 if (Settings.settings.restBonus == ChoiceDNY.No)
                 {
                     switch (Settings.settings.asleepConditionRecovery)
@@ -913,6 +916,7 @@ namespace CustomSettingsTweaker
                     default:
                         break;
                 }
+                //MelonLogger.Msg("m_ConditonRecoveryFromRestScale NEW " + __instance.m_ConditonRecoveryFromRestScale.ToString());
 
                 // Hypothermia Recovery Rate
                 switch (Settings.settings.hypothermiaRecovery)
@@ -1226,62 +1230,72 @@ namespace CustomSettingsTweaker
             }
         }
 
-        [HarmonyPatch(typeof(CustomExperienceMode), "GetWolfSpawnChance")]
+        [HarmonyPatch(typeof(SpawnRegion), nameof(SpawnRegion.GetCustomSpawnRegionChanceActiveScale))]
         private static class UpdateWolfSpawnChance
         {
-            private static void Postfix(CustomExperienceModeManager.CustomTunableNLMHV __result, WolfType wolfType)
+            private static void Postfix(SpawnRegion __instance, ref float __result)
             {
                 if (ExperienceModeManager.GetCurrentExperienceModeType() != ExperienceModeType.Custom || Settings.settings.modFunction == ModFunction.Disabled) return;
                 if (Settings.settings.timberwolfSpawn == ChoiceDNLMHV.Default && Settings.settings.wolfSpawn == ChoiceDNLMHV.Default) return;
 
-                //MelonLogger.Msg("Wolf Spawn Chance ORIGINAL" + __result.ToString());
-                if (Settings.settings.timberwolfSpawn != ChoiceDNLMHV.Default && wolfType != WolfType.Normal)
+                if (__instance.m_AiSubTypeSpawned == AiSubType.Wolf)
                 {
-                    switch (Settings.settings.timberwolfSpawn)
+                    //MelonLogger.Msg("GetCustomSpawnRegionChanceActiveScale | " + __instance.m_AiSubTypeSpawned.ToString() + " | " + __instance.m_WolfTypeSpawned.ToString());
+                    
+                    //MelonLogger.Msg("Wolf Spawn Chance OLD (scale)" + __result);
+
+                    Dictionary<int, ExperienceMode> baseXPModesSortedByDifficultyAsc = GetBaseXPModesSortedByDifficultyAsc();
+
+                    if (Settings.settings.timberwolfSpawn != ChoiceDNLMHV.Default && __instance.m_WolfTypeSpawned != WolfType.Normal)
                     {
-                        case ChoiceDNLMHV.None:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.None;
-                            break;
-                        case ChoiceDNLMHV.Low:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.Low;
-                            break;
-                        case ChoiceDNLMHV.Medium:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.Medium;
-                            break;
-                        case ChoiceDNLMHV.High:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.High;
-                            break;
-                        case ChoiceDNLMHV.VeryHigh:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.VeryHigh;
-                            break;
-                        default:
-                            break;
+                        switch (Settings.settings.timberwolfSpawn)
+                        {
+                            case ChoiceDNLMHV.None:
+                                __result = 0f;
+                                break;
+                            case ChoiceDNLMHV.Low:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Pilgrim].m_SpawnRegionChanceActiveScale;
+                                break;
+                            case ChoiceDNLMHV.Medium:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Voyageur].m_SpawnRegionChanceActiveScale;
+                                break;
+                            case ChoiceDNLMHV.High:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Interloper].m_SpawnRegionChanceActiveScale;
+                                break;
+                            case ChoiceDNLMHV.VeryHigh:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Stalker].m_SpawnRegionChanceActiveScale;
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-                else if (Settings.settings.wolfSpawn != ChoiceDNLMHV.Default)
-                {
-                    switch (Settings.settings.wolfSpawn)
+                    else if (Settings.settings.wolfSpawn != ChoiceDNLMHV.Default && __instance.m_WolfTypeSpawned == WolfType.Normal)
                     {
-                        case ChoiceDNLMHV.None:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.None;
-                            break;
-                        case ChoiceDNLMHV.Low:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.Low;
-                            break;
-                        case ChoiceDNLMHV.Medium:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.Medium;
-                            break;
-                        case ChoiceDNLMHV.High:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.High;
-                            break;
-                        case ChoiceDNLMHV.VeryHigh:
-                            __result = CustomExperienceModeManager.CustomTunableNLMHV.VeryHigh;
-                            break;
-                        default:
-                            break;
+                        switch (Settings.settings.wolfSpawn)
+                        {
+                            case ChoiceDNLMHV.None:
+                                __result = 0f;
+                                break;
+                            case ChoiceDNLMHV.Low:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Pilgrim].m_SpawnRegionChanceActiveScale;
+                                break;
+                            case ChoiceDNLMHV.Medium:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Voyageur].m_SpawnRegionChanceActiveScale;
+                                break;
+                            case ChoiceDNLMHV.High:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Interloper].m_SpawnRegionChanceActiveScale;
+                                break;
+                            case ChoiceDNLMHV.VeryHigh:
+                                __result = baseXPModesSortedByDifficultyAsc[(int)ExperienceModeType.Stalker].m_SpawnRegionChanceActiveScale;
+                                break;
+                            default:
+                                break;
+                        }
                     }
+
+                    //MelonLogger.Msg("Wolf Spawn Chance NEW (scale)" + __result);
                 }
-                //MelonLogger.Msg("Wolf Spawn Chance NEW" + __result.ToString());
+
             }
         }
 
@@ -1458,7 +1472,7 @@ namespace CustomSettingsTweaker
                 return true;
             }
         }
-        private static float GetDefaultThirstValue(string name) 
+        private static float GetDefaultThirstValue(string name)
         {
             FoodItem foodItem = GetGearItemPrefab(name).GetComponent<FoodItem>();
             if (foodItem == null) return 0;
@@ -1467,13 +1481,13 @@ namespace CustomSettingsTweaker
         private static GearItem GetGearItemPrefab(string name) => Resources.Load(name).Cast<GameObject>().GetComponent<GearItem>();
 
         //replace the function removed from the assembly
-        private static System.Collections.Generic.List<ExperienceMode> GetBaseXPModesSortedByDifficultyAsc()
+        private static Dictionary<int, ExperienceMode> GetBaseXPModesSortedByDifficultyAsc()
         {
-            System.Collections.Generic.List<ExperienceMode> list = new System.Collections.Generic.List<ExperienceMode>();
-            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Pilgrim));
-            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Voyageur));
-            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Stalker));
-            list.Add(ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Interloper));
+            Dictionary<int, ExperienceMode> list = new Dictionary<int, ExperienceMode>();
+            list[(int)ExperienceModeType.Pilgrim] = ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Pilgrim);
+            list[(int)ExperienceModeType.Voyageur] = ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Voyageur);
+            list[(int)ExperienceModeType.Stalker] = ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Stalker);
+            list[(int)ExperienceModeType.Interloper] = ExperienceModeManager.Instance.GetSpecificExperienceMode(ExperienceModeType.Interloper);
             return list;
         }
 
