@@ -3,6 +3,7 @@ using Il2Cpp;
 using Il2CppTLD.Gameplay;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using CustomExperienceModeManager = Il2CppTLD.Gameplay.Tunable;
 
 namespace CustomSettingsTweaker
@@ -1464,7 +1465,7 @@ namespace CustomSettingsTweaker
             if (foodItem == null) return 0;
             return foodItem.m_ReduceThirst;
         }
-        private static GearItem GetGearItemPrefab(string name) => Resources.Load(name).Cast<GameObject>().GetComponent<GearItem>();
+        private static GearItem GetGearItemPrefab(string name) => Addressables.LoadAssetAsync<GameObject>(name).WaitForCompletion().GetComponent<GearItem>();
 
         //replace the function removed from the assembly
         private static System.Collections.Generic.List<ExperienceMode> GetBaseXPModesSortedByDifficultyAsc()
