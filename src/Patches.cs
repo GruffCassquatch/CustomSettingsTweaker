@@ -24,16 +24,16 @@ namespace CustomSettingsTweaker
                 switch (Settings.settings.resourceAvailability)
                 {
                     case ChoiceDLMHV.Low:
-                        __result.m_BaseWorldDifficulty = CustomExperienceModeManager.CustomTunableLMHV.Low;
+                        __result.m_BaseResourceAvailability = CustomExperienceModeManager.CustomTunableLMHV.Low;
                         break;
                     case ChoiceDLMHV.Medium:
-                        __result.m_BaseWorldDifficulty = CustomExperienceModeManager.CustomTunableLMHV.Medium;
+                        __result.m_BaseResourceAvailability = CustomExperienceModeManager.CustomTunableLMHV.Medium;
                         break;
                     case ChoiceDLMHV.High:
-                        __result.m_BaseWorldDifficulty = CustomExperienceModeManager.CustomTunableLMHV.High;
+                        __result.m_BaseResourceAvailability = CustomExperienceModeManager.CustomTunableLMHV.High;
                         break;
                     case ChoiceDLMHV.VeryHigh:
-                        __result.m_BaseWorldDifficulty = CustomExperienceModeManager.CustomTunableLMHV.VeryHigh;
+                        __result.m_BaseResourceAvailability = CustomExperienceModeManager.CustomTunableLMHV.VeryHigh;
                         break;
                     default:
                         break;
