@@ -1,5 +1,7 @@
 # Custom Settings Tweaker
 
+I AM NOT CURRENTLY MAINTAINING THIS OR ANY OTHER MOD. PLEASE DO NOT OPEN ISSUES OR CONTACT ME REGARDING THIS OR ANY OTHER MOD.
+
 FOR GAME VERSION 2.00 / 2.02 (**PRE TALES FROM THE FAR TERRITORY**)    
 Allows you to change and fine-tune several settings in a Custom mode game (new or existing).     
 Should be compatible with other mods that also alter these settings, just leave the corresponding setting in this mod at ```Unchanged``` so the other mod alters it as intended.
